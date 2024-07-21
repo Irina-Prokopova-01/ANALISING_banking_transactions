@@ -2,7 +2,8 @@ from unittest.mock import patch
 
 import pandas as pd
 import pytest
-from src.views import views
+from src.views import *
+from src.utils import *
 import json
 
 
@@ -13,7 +14,7 @@ expected = {
     "currency_rates": {"USD": 90},
     "stock_prices": {"APPL": 1500},
 }
-expected_json = json.dumps(expected, ensure_ascii=False)
+expected_json = json.dumps(expected, ensure_ascii=False, indent=2, separators=(',', ': '))
 transactions = pd.DataFrame(
     [
         {
@@ -71,10 +72,10 @@ def test_views(
     mock_json_loader.return_value = ["USD", "EUR"]
     mock_views_currency_rates.return_value = {"USD": 90}
     mock_views_stock_rates.return_value = {"APPL": 1500}
-    assert views("2024-07-06 10:42:30", transactions) == expected_json
+    assert views_file("2024-07-06 10:42:30", transactions) == expected_json
 
 
 def test_views_with_wrong_date():
     with pytest.raises(Exception) as exc_info:
-        views("ABC", transactions)
+        views_file("ABC", transactions)
         assert str(exc_info.value) == "При работе функции произошла ошибка!"

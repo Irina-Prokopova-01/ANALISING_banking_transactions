@@ -34,8 +34,12 @@
 import json
 
 # from config import VIEWS_LOGS
-from src.utils import (card_info, currency_rates, greetings,  # json_loader,
-                       reading_excel, stock_rates, top_five_transactions)
+from src.utils import (card_info,
+                       currency_rates,
+                       greetings, json_loader,
+                       reading_excel,
+                       stock_rates,
+                       top_five_transactions)
 
 # import logging
 
@@ -50,17 +54,17 @@ def views_file(date: str, transactions_df) -> str:
         greeting = greetings(date)
         info_about_cards = card_info(transactions_df)
         five_transactions = top_five_transactions(transactions_df)
-        # users_settings = json_loader()
-        # currensy = currency_rates(users_settings[0])
-        # stock = stock_rates(users_settings[1])
+        users_settings = json_loader()
+        currency = currency_rates(users_settings[0])
+        stock = stock_rates(users_settings[1])
         result_dict = {
             "greeting": greeting,
             "cards": info_about_cards,
             "top_transactions": five_transactions,
-            # "currency_rates": currensy,
-            # "stock_prices": stock,
+            "currency_rates": currency,
+            "stock_prices": stock,
         }
-        result_json = json.dumps(result_dict, ensure_ascii=False)
+        result_json = json.dumps(result_dict, ensure_ascii=False, indent=2, separators=(',', ': '))
         return result_json
     except Exception:
         raise ValueError("При работе функции произошла ошибка.")

@@ -11,7 +11,7 @@ import pandas as pd
 # from config import REPORTS_LOGS, ROOT_DIR
 
 
-def log(filename: str = "log_file.json") -> Any:
+def log(filename: str = "../src/log_file.json") -> Any:
     """Декоратор принимает функцию. Проводит запись результата (pd.DataFrame) её работы в json-файл.
     Возвращает результат самой функции."""
 

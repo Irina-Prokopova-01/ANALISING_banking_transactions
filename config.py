@@ -1,12 +1,14 @@
 import os
 #
-API_KEY = CHbnw8TkWXa9ygErhARCY8yasU7Sg1fG
-API_KEY_2 = CBcTVBp88ltD9PPMnfBoKcRDt0YDem7P
+# API_KEY = CHbnw8TkWXa9ygErhARCY8yasU7Sg1fG
+# API_KEY_2 = CBcTVBp88ltD9PPMnfBoKcRDt0YDem7P
 #
 #
 #
 # # Корневая директория проекта
 ROOT_DIR = os.path.dirname(__file__)
+
+
 #
 # # Директория для логов
 # LOGS_DIR = os.path.join(ROOT_DIR, "logs")

@@ -4,7 +4,7 @@ import logging
 import os
 from collections import defaultdict
 from typing import Any, Dict, List, Tuple
-
+from config import ROOT_DIR
 import pandas as pd
 import requests
 from dotenv import load_dotenv
@@ -35,10 +35,12 @@ def greetings(date_string: str) -> str:
 
 def reading_excel(path):
     if not os.path.exists(path):
+        print(path)
         return []
     if ".xlsx" in path:
         xlsx_file_transactions = pd.read_excel(path)
-        # print(xlsx_file_transactions)
+        xlsx_file_transactions['Кэшбэк'] = xlsx_file_transactions['Кэшбэк'].fillna(0)
+        print(xlsx_file_transactions)
         return xlsx_file_transactions.to_dict(orient="records")
 
 
@@ -99,18 +101,18 @@ def currency_rates(users_currencies: List) -> List[Dict[str, Any]]:
         raise Exception("При работе функции произошла ошибка!")
 
 
-# def json_loader(file_name: str = "user_settings.json") -> Tuple[Any, Any]:
-#     """Функция может принимать название json-файла пользовательских настроек
-#     (по-умолчанию задано 'user_settings.json'), который расположен в корне проекта.
-#     Обрабатывает json-файл пользовательских настроек.
-#     Возвращает кортеж списков валют и акций."""
-#     file_with_dir = os.path.join(ROOT_DIR, file_name)
-#     try:
-#         with open(file_with_dir, "r", encoding="utf-8") as file_in:
-#             data_list = json.load(file_in)
-#             return data_list["user_currencies"], data_list["user_stocks"]
-#     except Exception:
-#         raise ValueError("Возникла ошибка при обработке файла пользовательских настроек!")
+def json_loader(file_name: str = "user_settings.json") -> Tuple[Any, Any]:
+    """Функция может принимать название json-файла пользовательских настроек
+    (по-умолчанию задано 'user_settings.json'), который расположен в корне проекта.
+    Обрабатывает json-файл пользовательских настроек.
+    Возвращает кортеж списков валют и акций."""
+    file_with_dir = os.path.join(ROOT_DIR, file_name)
+    try:
+        with open(file_with_dir, "r", encoding="utf-8") as file_in:
+            data_list = json.load(file_in)
+            return data_list["user_currencies"], data_list["user_stocks"]
+    except Exception:
+        raise ValueError("Возникла ошибка при обработке файла пользовательских настроек!")
 
 
 def stock_rates(users_stocks: List) -> List[Dict[str, Any]]:
@@ -192,6 +194,6 @@ if __name__ == "__main__":
     ]
     print(top_five_transactions(data_for_five))
     print(stock_rates(["AAPL", "AMZN", "GOOGL"]))
-    # print(json_loader("user_settings.json"))
+    print(json_loader("user_settings.json"))
     print(currency_rates(["USD"]))
     # print(convert_to_rubles('USD'))

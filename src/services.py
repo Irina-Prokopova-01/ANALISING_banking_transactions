@@ -1,10 +1,10 @@
 import datetime
 import json
-import logging
+# import logging
 from math import ceil, floor
 from typing import Any, Dict, List, Union
 
-from config import SERVICES_LOGS
+# from config import SERVICES_LOGS
 from src.utils import reading_excel
 
 
@@ -53,9 +53,11 @@ def investment_bank(
         investment_result += abs(rounded_payment) - abs(transaction["Сумма операции"])
     result = round(float(investment_result), 2)
     result_json = json.dumps(result, ensure_ascii=False)
+    # print(data_from_excel)
     return result_json
 
 
 if __name__ == "__main__":
-    data_from_excel = reading_excel("operations.xls")
-    print(investment_bank("2021-10", data_from_excel.to_dict(orient="records"), 100))
+    data_from_excel = reading_excel("../data/operations.xlsx")
+    print(data_from_excel)
+    print(investment_bank("2021-10", data_from_excel, 2))
