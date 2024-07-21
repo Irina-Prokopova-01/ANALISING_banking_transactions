@@ -47,7 +47,7 @@ def reading_excel(path):
 def card_info(transactions: List[Dict]) -> List[Dict]:
     """Функция принимает список транзакций(словарей).
     Возвращает список словарей с информацией по каждой карте: последние 4 цифры номера карты,
-    общая сумма расходов, кэшбек (1 рубль на каждые 100 рублей)."""
+    общая сумма расходов, cashback (1 рубль на каждые 100 рублей)."""
     unique_card_nums = list(
         set([transaction["Номер карты"] for transaction in transactions])
     )
