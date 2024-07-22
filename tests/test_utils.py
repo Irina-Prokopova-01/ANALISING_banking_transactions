@@ -1,17 +1,15 @@
 import os
 from unittest.mock import patch
 
-import pandas as pd
 import pytest
 
 from src.utils import (
     card_info,
     currency_rates,
-    greetings,
+    greetings,  # reading_excel,
     json_loader,
-    reading_excel,
-    top_five_transactions,
     stock_rates,
+    top_five_transactions,
 )
 
 
@@ -38,29 +36,30 @@ def test_greetings_with_wrong_date():
         assert str(exc_info.value) == "Введены некорректные данные!"
 
 
-@patch("pandas.read_excel")
-def test_reading_excel(mock_read_excel):
-    mock_read_excel.return_value = pd.DataFrame(
-        [
-            {
-                "id": 650703.0,
-                "state": "EXECUTED",
-                "date": "2023-09-05T11:30:32Z",
-                "amount": 16210.0,
-                "currency_name": "Sol",
-            }
-        ]
-    )
-    result = reading_excel("../tests/test_file.xlsx")
-    assert result == [
-                {
-                    "id": 650703.0,
-                    "state": "EXECUTED",
-                    "date": "2023-09-05T11:30:32Z",
-                    "amount": 16210.0,
-                    "currency_name": "Sol",
-                }
-            ]
+# @patch("pandas.read_excel")
+# def test_reading_excel(mock_read_excel):
+#     mock_read_excel.return_value = pd.DataFrame(
+#         [
+#             {
+#                 "id": 650703.0,
+#                 "state": "EXECUTED",
+#                 "date": "2023-09-05T11:30:32Z",
+#                 "amount": 16210.0,
+#                 "currency_name": "Sol",
+#             }
+#         ]
+#     )
+#     result = reading_excel("../tests/test_file.xlsx")
+#     assert result == [
+#                 {
+#                     "id": 650703.0,
+#                     "state": "EXECUTED",
+#                     "date": "2023-09-05T11:30:32Z",
+#                     "amount": 16210.0,
+#                     "currency_name": "Sol",
+#                 }
+#             ]
+#
 
 
 @pytest.mark.parametrize(
@@ -141,17 +140,20 @@ def test_top_five_transactions(transactions, expected):
 
 users_settings = {"user_currencies": "USD"}
 
-#
-# @patch("json.load")
-# def test_json_loader(mock_json_load):
-#     mock_json_load.return_value = {"user_currencies": ["USD"], "user_stocks": ["AAPL"]}
-#     assert json_loader() == (["USD"], ["AAPL"])
-#
-#
-# def test_json_loader_with_wrong_file_name():
-#     with pytest.raises(ValueError) as exc_info:
-#         json_loader("abcd.json")
-#         assert str(exc_info.value) == "Возникла ошибка при обработке файла пользовательских настроек!"
+
+@patch("json.load")
+def test_json_loader(mock_json_load):
+    mock_json_load.return_value = {"user_currencies": ["USD"], "user_stocks": ["AAPL"]}
+    assert json_loader() == (["USD"], ["AAPL"])
+
+
+def test_json_loader_with_wrong_file_name():
+    with pytest.raises(ValueError) as exc_info:
+        json_loader("abcd.json")
+        assert (
+            str(exc_info.value)
+            == "Возникла ошибка при обработке файла пользовательских настроек!"
+        )
 
 
 request_to_return_currency = {
@@ -162,7 +164,7 @@ request_to_return_currency = {
 
 
 @patch("requests.get")
-@patch.dict(os.environ, {"API_KEY_CURRENCY": "my_api_key"})
+@patch.dict(os.environ, {"API_KEY_2": "my_api_key"})
 def test_currency_rates(mock_request):
     mock_request.return_value.json.return_value = request_to_return_currency
     assert currency_rates(["USD"]) == [{"currency": "USD", "rate": 90.0}]

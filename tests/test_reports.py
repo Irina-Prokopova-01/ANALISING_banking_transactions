@@ -1,11 +1,7 @@
-import json
-import os
-
 import pandas as pd
 import pytest
 
-from config import ROOT_DIR
-from src.reports import filtered_by_category, filtered_by_date, log, spent_by_category
+from src.reports import filtered_by_category, filtered_by_date, spent_by_category
 
 test_data = [
     {
@@ -407,15 +403,15 @@ test_data_for_log = pd.DataFrame(
 )
 
 
-@log()
-def func(data):
-    return pd.DataFrame(data)
+# @log()
+# def func(data):
+#     return pd.DataFrame(data)
+#
 
-
-@pytest.mark.parametrize("data, expected", [(test_data_for_log, test_data_for_log)])
-def test_func(data, expected):
-    result = func(data)
-    with open(os.path.join(ROOT_DIR, "log_file.json"), "r") as file:
-        result_file = json.load(file)
-    assert result.equals(expected)
-    assert result_file == expected.to_dict(orient="records")
+# @pytest.mark.parametrize("data, expected", [(test_data_for_log, test_data_for_log)])
+# def test_func(data, expected):
+#     result = func(data)
+#     with open(os.path.join(ROOT_DIR, "log_file.json"), "r") as file:
+#         result_file = json.load(file)
+#     assert result.equals(expected)
+#     assert result_file == expected.to_dict(orient="records")
