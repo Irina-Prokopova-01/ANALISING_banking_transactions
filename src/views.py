@@ -1,15 +1,8 @@
 import json
 import logging
 
-from src.utils import (
-    card_info,
-    currency_rates,
-    greetings,
-    json_loader,
-    reading_excel,
-    stock_rates,
-    top_five_transactions,
-)
+from src.utils import (card_info, currency_rates, greetings, json_loader,
+                       reading_excel, stock_rates, top_five_transactions)
 
 logger = logging.getLogger("views")
 file_handler = logging.FileHandler("../logs/views.log", encoding="utf8", mode="w")

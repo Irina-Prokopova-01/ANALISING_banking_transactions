@@ -3,14 +3,9 @@ from unittest.mock import patch
 
 import pytest
 
-from src.utils import (
-    card_info,
-    currency_rates,
-    greetings,  # reading_excel,
-    json_loader,
-    stock_rates,
-    top_five_transactions,
-)
+from src.utils import greetings  # reading_excel,
+from src.utils import (card_info, currency_rates, json_loader, stock_rates,
+                       top_five_transactions)
 
 
 @pytest.fixture

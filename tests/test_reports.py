@@ -1,7 +1,8 @@
 import pandas as pd
 import pytest
 
-from src.reports import filtered_by_category, filtered_by_date, spent_by_category
+from src.reports import (filtered_by_category, filtered_by_date,
+                         spent_by_category)
 
 test_data = [
     {
