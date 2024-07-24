@@ -165,4 +165,4 @@ str.txt
 q
 str
 mylog.txt
-src/mylog.txt
+src/mylog.txtgit rm -r --cached .idea
