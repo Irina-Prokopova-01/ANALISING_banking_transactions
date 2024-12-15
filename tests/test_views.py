@@ -1,11 +1,10 @@
+import json
 from unittest.mock import patch
 
-import pandas as pd
 import pytest
-from src.views import *
-from src.utils import *
-import json
 
+from src.utils import *
+from src.views import *
 
 expected = {
     "greeting": "Доброе утро!",
@@ -14,7 +13,9 @@ expected = {
     "currency_rates": {"USD": 90},
     "stock_prices": {"APPL": 1500},
 }
-expected_json = json.dumps(expected, ensure_ascii=False, indent=2, separators=(',', ': '))
+expected_json = json.dumps(
+    expected, ensure_ascii=False, indent=2, separators=(",", ": ")
+)
 transactions = pd.DataFrame(
     [
         {

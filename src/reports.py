@@ -1,29 +1,37 @@
 import datetime
 import json
-# import logging
-import os
+import logging
 import re
 from functools import wraps
 from typing import Any, Callable, Dict, List
 
 import pandas as pd
 
-# from config import REPORTS_LOGS, ROOT_DIR
+logger = logging.getLogger("reports")
+file_handler = logging.FileHandler("../logs/reports.log", encoding="utf8", mode="w")
+file_formatter = logging.Formatter("%(asctime)s %(name)s %(levelname)s: %(message)s")
+file_handler.setFormatter(file_formatter)
+logger.addHandler(file_handler)
+logger.setLevel(logging.DEBUG)
 
 
 def log(filename: str = "../src/log_file.json") -> Any:
     """Декоратор принимает функцию. Проводит запись результата (pd.DataFrame) её работы в json-файл.
     Возвращает результат самой функции."""
+    logger.info("Декоратор начал свою работу.")
 
     def wrapper(func: Callable) -> Any:
         @wraps(func)
         def inner(*args: Any, **kwargs: Any) -> Any:
+            logger.info("Декоратор получает результат работы декорируемой функции.")
             result = func(*args, **kwargs)
+            logger.info("Декоратор записывает полученный результат в файл.")
             # print(result)
             with open(filename, "w", encoding="utf-8") as file:
                 json.dump(
                     result.to_dict(orient="records"), file, ensure_ascii=False, indent=4
                 )
+            logger.info("Декоратор успешно завершил свою работу.")
             return result
 
         return inner
@@ -36,12 +44,15 @@ def filtered_by_category(
 ) -> List[Dict[str, Any]]:
     """Функция принимает список транзакций и категорию.
     Возвращает список транзакций (словарей), отфильтрованных по заданной категории."""
+    logger.info("Функция начала свою работу.")
     pattern = rf"{category}"
+    logger.info("Функция обрабатывает полученные данные.")
     filtered_list = [
         transaction
         for transaction in transactions
         if re.findall(pattern, transaction["Категория"], flags=re.IGNORECASE)
     ]
+    logger.info("Функция успешно завершила свою работу.")
     return filtered_list
 
 
@@ -49,6 +60,7 @@ def filtered_by_date(transactions: List[Dict], date: str = "") -> List[Dict[str,
     """Функция принимает список транзакций (словарей) и дату.
     Возвращает список транзакций (словарей), отобранных за период в 3 месяца от заданной даты,
     если дата не передана, то от настоящего числа."""
+    logger.info("Функция начала свою работу.")
     time_start = datetime.time(hour=00, minute=00, second=00)
     time_end = datetime.time(hour=23, minute=59, second=59)
     if not date:
@@ -58,6 +70,7 @@ def filtered_by_date(transactions: List[Dict], date: str = "") -> List[Dict[str,
         end_date = datetime.datetime.strptime(date, "%Y-%m-%d")
         start_date = end_date - datetime.timedelta(weeks=12)
     filtered_list = []
+    logger.info("Функция обрабатывает полученные данные.")
     for transaction in transactions:
         transaction_date = datetime.datetime.strptime(
             transaction["Дата операции"], "%d.%m.%Y %H:%M:%S"
@@ -68,6 +81,7 @@ def filtered_by_date(transactions: List[Dict], date: str = "") -> List[Dict[str,
             <= datetime.datetime.combine(end_date, time_end)
         ):
             filtered_list.append(transaction)
+    logger.info("Функция успешно завершила свою работу.")
     return filtered_list
 
 
@@ -79,11 +93,15 @@ def spent_by_category(
     Подготовленные данные передаёт для дальнейшей обработки своим подфункциям.
     Возвращает pd.DataFrame транзакций, отобранных за определённый период по определённой категории.
     """
+    logger.info("Функция начала свою работу.")
     not_null_category = transactions.loc[transactions["Категория"].notnull()]
+    logger.info("Функция проводит очистку от пустых значений в Категориях")
     transaction_list = not_null_category.to_dict(orient="records")
+    logger.info("Функция передаёт очищенные данные для обработки своим подфункциям.")
     filtered_by_date_list = filtered_by_date(transaction_list, date)
     filtered_by_category_list = filtered_by_category(category, filtered_by_date_list)
     result = pd.DataFrame(filtered_by_category_list)
+    logger.info("Функция успешно завершила свою работу.")
     return result
 
 
